@@ -43,3 +43,10 @@ class ProjectService:
         db.commit()
         db.refresh(project)
         return project
+    
+    def get_project(self, db, project_id):
+        return (
+            db.query(Project)
+            .filter(Project.id == project_id)
+            .first()
+        )

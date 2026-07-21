@@ -178,9 +178,7 @@ RULES
     def execute(self, project_id: int) -> AgentResult:
         try:
             planner_context = self._build_context()
-            print("planner context ----------> ",planner_context)
             prompt = self._build_prompt(planner_context)
-            print("prompt ----------> ",prompt)
             response = self._call_llm(prompt)
             plan = self._process_response(response)
             print("plan ----------> ",plan)
@@ -194,7 +192,7 @@ RULES
                 success=True,
                 message="Project plan generated successfully.",
                 data=plan,
-                next_stage=None
+                next_stage="Research Agent"
             )
         except Exception as e:
             return AgentResult(

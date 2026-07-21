@@ -31,3 +31,33 @@ class Plan(Base):
     duration = Column(Integer)
     reasoning = Column(Text)
     research_points = Column(JSON)
+    
+# RESEARCH MODEL 
+
+class Research(Base):
+
+    __tablename__ = "research"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    project_id = Column(
+        Integer,
+        ForeignKey("projects.id"),
+        nullable=False
+    )
+
+    topic = Column(String)
+
+    summary = Column(Text)
+
+    research_point_findings = Column(JSON)
+
+    scientific_facts = Column(JSON)
+
+    interesting_facts = Column(JSON)
+
+    consequences = Column(JSON)
+
+    misconceptions = Column(JSON)
+
+    references = Column(JSON)

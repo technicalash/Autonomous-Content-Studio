@@ -1,5 +1,5 @@
 from backend.database.database import SessionLocal
-from backend.database.models import Plan
+from backend.database.models import Plan, Research
 from backend.database.models import Project
 
 class MemoryService:
@@ -44,11 +44,44 @@ class MemoryService:
     def get_top_projects(self, db, limit=3):
         return []
 
-    def save_research(self, project_id, research):
-        pass
+    def save_research(self, db, project_id, research):
+        research_db = Research(
 
-    def get_research(self, project_id):
-        pass
+            project_id=project_id,
+
+            topic=research.topic,
+
+            summary=research.summary,
+
+            research_point_findings=research.research_point_findings,
+
+            scientific_facts=research.scientific_facts,
+
+            interesting_facts=research.interesting_facts,
+
+            consequences=research.consequences,
+
+            misconceptions=research.misconceptions,
+
+            references=research.references
+        )
+        
+        db.add(research_db)
+
+        db.commit()
+
+        db.refresh(research_db)
+
+        return research_db
+
+    def get_research(self, db, project_id):
+        return (
+        db.query(Research)
+        .filter(
+            Research.project_id == project_id
+        )
+        .first()
+    )
 
     def save_storyboard(self, project_id, storyboard):
         pass
