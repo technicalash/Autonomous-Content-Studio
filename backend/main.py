@@ -1,9 +1,10 @@
 from fastapi import FastAPI
 from backend.config.settings import settings
-from backend.database import database
+from backend.database.database import SessionLocal
 from backend.orchestrator.orchestrator import Orchestrator
 from backend.schemas.project_context import ProjectContext
 from backend.schemas.generate_request import GenerateRequest
+from fastapi import HTTPException
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -18,18 +19,16 @@ def root():
 
 @app.post("/generate")
 def generate(request: GenerateRequest):
-
-    context = ProjectContext(
-        topic=request.topic,
-        category=request.category,
-        platform=request.platform,
-        duration=request.duration,
-        language=request.language,
-        status="planning"
-    )
-
-    orchestrator = Orchestrator()
-
-    result = orchestrator.run(context)
-
-    return result
+    
+    db = SessionLocal()
+    try:
+        orchestrator = Orchestrator(db)
+        result = orchestrator.run()
+        return result
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+            )
+    finally:
+        db.close()      

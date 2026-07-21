@@ -4,3 +4,9 @@ __pycache__/
 .env
 storage/
 logs/
+
+acs.db
+.idea/
+.vscode/
+
+*.log

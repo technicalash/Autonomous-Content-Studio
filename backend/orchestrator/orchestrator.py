@@ -7,17 +7,33 @@ from backend.services.project_service import ProjectService
 
 class Orchestrator:
 
-    def __init__(self):
-        self.project_service = ProjectService() 
-        self.planner = PlannerAgent()
+    def __init__(self, db):
+        self.db = db
 
-    def run(self, context: ProjectContext) -> AgentResult:
-        project = self.project_service.create_project(
-            topic=context.topic,
-            category=context.category,
-            platform=context.platform,
-            language=context.language
+        self.project_service = ProjectService()
+
+        self.planner = PlannerAgent(db)
+
+    def run(self) -> AgentResult:
+
+        # Create an empty project
+        project = self.project_service.create_project(self.db)
+
+        # Planner generates the ProjectPlan
+        result = self.planner.execute(project.id)
+        
+        if not result.success:
+            self.project_service.update_status(
+                self.db,
+                project.id,
+                "planning_failed"
+            )
+            return result
+        
+        self.project_service.update_project(
+        self.db,
+        project.id,
+        result.data
         )
-        context.project_id = project.id
-        result = self.planner.execute(context)
+
         return result
