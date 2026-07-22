@@ -3,6 +3,7 @@ from backend.schemas.agent_result import AgentResult
 
 from backend.agents.planner_agent import PlannerAgent
 from backend.agents.research_agent import ResearchAgent
+from backend.agents.storyboard_agent import StoryboardAgent
 from backend.services.project_service import ProjectService
 
 
@@ -15,6 +16,7 @@ class Orchestrator:
 
         self.planner = PlannerAgent(db)
         self.research = ResearchAgent(db)
+        self.storyboard=StoryboardAgent(db)
 
     def run(self) -> AgentResult:
 
@@ -46,3 +48,14 @@ class Orchestrator:
                 "research_failed"
             )
             return research_result
+        
+        # STORYBOARD AGENT 
+        
+        story_result=self.storyboard.execute(project.id)
+        if not story_result.success:
+            self.project_service.update_status(
+                self.db,
+                project.id,
+                "research_failed"
+            )
+            return story_result 

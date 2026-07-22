@@ -175,8 +175,6 @@ RULES
                 self.db,
                 project_id
                 )
-            print("plan -------> ",plan)
-            print("project -------> ",project)
             prompt = self._build_prompt(project, plan)
             response = self.agent.run(prompt)
 
@@ -198,5 +196,10 @@ RULES
 
         except Exception as e:
 
-            raise Exception(f"Research Agent Failed: {e}")
+            return AgentResult(
+                success=False,
+                message=str(e),
+                data=None,
+                next_stage=None
+                )
         

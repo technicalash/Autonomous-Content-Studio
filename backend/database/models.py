@@ -61,3 +61,26 @@ class Research(Base):
     misconceptions = Column(JSON)
 
     references = Column(JSON)
+
+# STORYBOARD MODEL
+
+class Storyboard(Base):
+    __tablename__ = "storyboards"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    project_id = Column(
+        Integer,
+        ForeignKey("projects.id"),
+        nullable=False
+    )
+
+    title = Column(String)
+
+    hook = Column(String)
+
+    scenes = Column(JSON)
+
+    ending = Column(String)
+
+    call_to_action = Column(String)

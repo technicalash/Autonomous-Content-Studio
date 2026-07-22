@@ -1,5 +1,5 @@
 from backend.database.database import SessionLocal
-from backend.database.models import Plan, Research
+from backend.database.models import Plan, Research, Storyboard
 from backend.database.models import Project
 
 class MemoryService:
@@ -83,8 +83,23 @@ class MemoryService:
         .first()
     )
 
-    def save_storyboard(self, project_id, storyboard):
-        pass
+    def save_storyboard(self, db, project_id, storyboard):
+        db_storyboard = Storyboard(
+        project_id=project_id,
+        title=storyboard.title,
+        hook=storyboard.hook,
+        scenes=[scene.model_dump() for scene in storyboard.scenes],
+        ending=storyboard.ending,
+        call_to_action=storyboard.call_to_action
+    )
+        db.add(db_storyboard)
+        db.commit()
+        db.refresh(db_storyboard)
+        return db_storyboard
 
-    def get_storyboard(self, project_id):
-        pass
+    def get_storyboard(self, db, project_id):
+        return (
+        db.query(Storyboard)
+        .filter(Storyboard.project_id == project_id)
+        .first()
+        )
